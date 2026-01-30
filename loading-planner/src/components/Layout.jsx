@@ -1,0 +1,73 @@
+import React from 'react';
+import { Outlet, Link, useLocation } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import { Truck, User, LogOut, Plus } from 'lucide-react';
+
+const Layout = () => {
+    const { userRole, toggleRole } = useAuth();
+    const location = useLocation();
+
+    return (
+        <div className="layout">
+            <header className="glass" style={{
+                position: 'sticky',
+                top: 0,
+                zIndex: 50,
+                padding: '1rem',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                background: 'rgba(255, 255, 255, 0.85)'
+            }}>
+                <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <div style={{ background: 'var(--primary)', padding: '0.5rem', borderRadius: '0.5rem', color: 'white' }}>
+                        <Truck size={24} />
+                    </div>
+                    <div>
+                        <h1 style={{ fontSize: '1.25rem', lineHeight: 1 }}>LoadPlan</h1>
+                        <span className="text-sm">Admin Portal</span>
+                    </div>
+                </Link>
+
+                <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                    <button
+                        onClick={toggleRole}
+                        className="btn-secondary"
+                        style={{ padding: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.875rem' }}
+                    >
+                        <User size={16} />
+                        {userRole === 'admin' ? 'Admin' : 'User'}
+                    </button>
+                </div>
+            </header>
+
+            <main style={{ padding: '1rem', paddingBottom: '6rem' }}>
+                <Outlet />
+            </main>
+
+            {userRole === 'admin' && location.pathname === '/' && (
+                <Link
+                    to="/add"
+                    className="btn-primary"
+                    style={{
+                        position: 'fixed',
+                        bottom: '2rem',
+                        right: '2rem',
+                        borderRadius: '50%',
+                        width: '3.5rem',
+                        height: '3.5rem',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        padding: 0,
+                        boxShadow: 'var(--shadow-lg)'
+                    }}
+                >
+                    <Plus size={24} />
+                </Link>
+            )}
+        </div>
+    );
+};
+
+export default Layout;
