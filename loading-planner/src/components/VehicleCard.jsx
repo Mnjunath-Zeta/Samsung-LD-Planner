@@ -82,6 +82,7 @@ const VehicleCard = ({ vehicle }) => {
                         <button
                             onClick={(e) => {
                                 e.stopPropagation();
+                                setNotes(vehicle.notes || '');
                                 setShowNotesModal(true);
                             }}
                             style={{
@@ -187,9 +188,18 @@ const VehicleCard = ({ vehicle }) => {
                         />
                         <div style={{ display: 'flex', gap: '0.5rem', marginTop: '1rem' }}>
                             <button
-                                onClick={async () => {
-                                    await updateVehicle(vehicle.id, { ...vehicle, notes });
-                                    setShowNotesModal(false);
+                                onClick={async (e) => {
+                                    e.stopPropagation();
+                                    try {
+                                        console.log('Saving notes for vehicle:', vehicle.id);
+                                        console.log('New notes content:', notes);
+                                        await updateVehicle(vehicle.id, { notes: notes });
+                                        console.log('Update successful');
+                                        setShowNotesModal(false);
+                                    } catch (error) {
+                                        console.error('Failed to save notes:', error);
+                                        alert('Error saving notes');
+                                    }
                                 }}
                                 className="btn-primary"
                                 style={{ flex: 1 }}
