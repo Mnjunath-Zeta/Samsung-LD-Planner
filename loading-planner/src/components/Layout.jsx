@@ -24,9 +24,12 @@ const Layout = () => {
                     <div style={{ background: 'var(--primary)', padding: '0.5rem', borderRadius: '0.5rem', color: 'white' }}>
                         <Truck size={24} />
                     </div>
-                    <div>
-                        <h1 style={{ fontSize: '1.25rem', lineHeight: 1 }}>LoadPlan</h1>
-                        <span className="text-sm">Admin Portal</span>
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                        <h1 style={{ fontSize: '1rem', lineHeight: 1, fontWeight: 700, color: 'var(--primary)' }}>Samsung SDS</h1>
+                        <span style={{ fontSize: '0.875rem', fontWeight: 600 }}>LD Plan</span>
+                        <span className="text-sm" style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
+                            {userRole === 'admin' ? 'Admin Portal' : 'User Portal'}
+                        </span>
                     </div>
                 </Link>
 
