@@ -9,6 +9,10 @@ const VehicleCard = ({ vehicle }) => {
     const [showNotesModal, setShowNotesModal] = useState(false);
     const [notes, setNotes] = useState(vehicle.notes || '');
 
+    React.useEffect(() => {
+        setNotes(vehicle.notes || '');
+    }, [vehicle.notes]);
+
     const getStatusColor = (status) => {
         switch (status) {
             case 'Completed': return 'badge-green';
@@ -172,6 +176,8 @@ const VehicleCard = ({ vehicle }) => {
                             Notes - {vehicle.truckNumber}
                         </h3>
                         <textarea
+                            id={`notes-${vehicle.id}`}
+                            name="notes"
                             value={notes}
                             onChange={(e) => setNotes(e.target.value)}
                             placeholder="Add notes here..."
