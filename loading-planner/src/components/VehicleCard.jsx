@@ -187,8 +187,8 @@ const VehicleCard = ({ vehicle }) => {
                         />
                         <div style={{ display: 'flex', gap: '0.5rem', marginTop: '1rem' }}>
                             <button
-                                onClick={() => {
-                                    updateVehicle(vehicle.id, { notes });
+                                onClick={async () => {
+                                    await updateVehicle(vehicle.id, { ...vehicle, notes });
                                     setShowNotesModal(false);
                                 }}
                                 className="btn-primary"
