@@ -4,7 +4,7 @@ import VehicleCard from './VehicleCard';
 
 const Dashboard = () => {
     const { vehicles } = useData();
-    const [filterDate, setFilterDate] = React.useState(new Date().toISOString().split('T')[0]);
+    const [filterDate, setFilterDate] = React.useState('');
     const [filterStatus, setFilterStatus] = React.useState('All');
 
     const filteredVehicles = vehicles.filter(v => {
