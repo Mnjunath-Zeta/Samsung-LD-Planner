@@ -3,6 +3,171 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useData } from '../context/DataContext';
 import { useAuth } from '../context/AuthContext';
 
+const ManualDateInput = ({ label, value, onChange, disabled }) => {
+    const [text, setText] = React.useState('');
+
+    React.useEffect(() => {
+        if (value) {
+            const [y, m, d] = value.split('-');
+            setText(`${d}/${m}/${y.slice(-2)}`);
+        } else {
+            setText('');
+        }
+    }, []);
+
+    React.useEffect(() => {
+        if (!value && text) setText('');
+    }, [value]);
+
+    const handleChange = (e) => {
+        const val = e.target.value;
+        setText(val);
+
+        if (val === '') {
+            onChange('');
+            return;
+        }
+
+        const parts = val.split('/');
+        if (parts.length === 3 && parts[0].length === 2 && parts[1].length === 2 && parts[2].length === 2) {
+            const [d, m, y] = parts;
+            const iso = `20${y}-${m}-${d}`;
+            const date = new Date(iso);
+            if (!isNaN(date.getTime())) {
+                onChange(iso);
+            }
+        }
+    };
+
+    return (
+        <div style={{ marginBottom: '1rem' }}>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500, fontSize: '0.875rem' }}>{label}</label>
+            <input
+                type="text"
+                value={text}
+                onChange={handleChange}
+                placeholder="DD/MM/YY"
+                disabled={disabled}
+                style={{ width: '100%', padding: '0.5rem', border: '1px solid #ccc', borderRadius: '4px', fontSize: '0.875rem', background: disabled ? '#f3f4f6' : 'white' }}
+            />
+        </div>
+    );
+};
+
+const ManualDateTimeInput = ({ label, value, onChange, disabled }) => {
+    const [dateText, setDateText] = React.useState('');
+    const [timeText, setTimeText] = React.useState('');
+
+    React.useEffect(() => {
+        if (value) {
+            const [datePart, timePart] = value.split('T');
+            if (datePart) {
+                const [y, m, d] = datePart.split('-');
+                setDateText(`${d}/${m}/${y.slice(-2)}`);
+            }
+            if (timePart) {
+                setTimeText(timePart.slice(0, 5));
+            }
+        }
+    }, []);
+
+    const updateValue = (dText, tText) => {
+        if (!dText || !tText) return;
+
+        const dParts = dText.split('/');
+        if (dParts.length === 3 && dParts[0].length === 2 && dParts[1].length === 2 && dParts[2].length === 2 && tText.length === 5) {
+            const [d, m, y] = dParts;
+            const iso = `20${y}-${m}-${d}T${tText}`;
+            onChange(iso);
+        }
+    };
+
+    return (
+        <div style={{ marginBottom: '1rem' }}>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500, fontSize: '0.875rem' }}>{label}</label>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
+                <input
+                    type="text"
+                    value={dateText}
+                    onChange={(e) => {
+                        const val = e.target.value;
+                        setDateText(val);
+                        updateValue(val, timeText);
+                    }}
+                    placeholder="DD/MM/YY"
+                    disabled={disabled}
+                    style={{ padding: '0.5rem', border: '1px solid #ccc', borderRadius: '4px', background: disabled ? '#f3f4f6' : 'white' }}
+                />
+                <input
+                    type="text"
+                    value={timeText}
+                    onChange={(e) => {
+                        const val = e.target.value;
+                        setTimeText(val);
+                        updateValue(dateText, val);
+                    }}
+                    placeholder="HH:MM"
+                    disabled={disabled}
+                    style={{ padding: '0.5rem', border: '1px solid #ccc', borderRadius: '4px', background: disabled ? '#f3f4f6' : 'white' }}
+                />
+            </div>
+        </div>
+    );
+};
+
+const ManualTimeInput = ({ label, value, onChange, disabled }) => {
+    const [text, setText] = React.useState('');
+
+    React.useEffect(() => {
+        if (value) {
+            // value is HH:MM or HH:MM:SS
+            setText(value.slice(0, 5));
+        } else {
+            setText('');
+        }
+    }, []);
+
+    React.useEffect(() => {
+        if (!value && text) setText('');
+    }, [value]);
+
+    const handleChange = (e) => {
+        const val = e.target.value;
+        setText(val);
+
+        if (val === '') {
+            onChange('');
+            return;
+        }
+
+        // Allow typing numbers and :
+        if (/^[\d:]*$/.test(val) && val.length <= 5) {
+            if (val.length === 5 && val.includes(':')) {
+                const [h, m] = val.split(':');
+                const hNum = parseInt(h);
+                const mNum = parseInt(m);
+                if (hNum >= 0 && hNum < 24 && mNum >= 0 && mNum < 60) {
+                    onChange(val);
+                }
+            }
+        }
+    };
+
+    return (
+        <div style={{ marginBottom: '1rem' }}>
+            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500, fontSize: '0.875rem' }}>{label}</label>
+            <input
+                type="text"
+                value={text}
+                onChange={handleChange}
+                placeholder="HH:MM"
+                disabled={disabled}
+                style={{ width: '100%', padding: '0.5rem', border: '1px solid #ccc', borderRadius: '4px', fontSize: '0.875rem', background: disabled ? '#f3f4f6' : 'white' }}
+            />
+        </div>
+    );
+};
+
 const VehicleForm = () => {
     const { id } = useParams();
     const navigate = useNavigate();
@@ -87,148 +252,37 @@ const VehicleForm = () => {
 
         // For datetime-local, use manual text inputs
         if (!isDisabled && type === 'datetime-local') {
-            const isoDateTime = formData[name] || '';
-            let displayDate = '';
-            let displayTime = '';
-
-            if (isoDateTime) {
-                const [datePart, timePart] = isoDateTime.split('T');
-                if (datePart) {
-                    const [y, m, d] = datePart.split('-');
-                    displayDate = `${d}/${m}/${y.slice(-2)}`;
-                }
-                if (timePart) {
-                    displayTime = timePart.substring(0, 5);
-                }
-            }
-
-            const handleManualInput = (field, value) => {
-                if (field === 'date') {
-                    // Parse DD/MM/YY
-                    const parts = value.split('/');
-                    if (parts.length === 3) {
-                        const [d, m, y] = parts;
-                        const fullYear = y.length === 2 ? `20${y}` : y;
-                        const isoDate = `${fullYear}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`;
-                        const timePart = isoDateTime.split('T')[1] || '00:00';
-                        handleChange({ target: { name, value: `${isoDate}T${timePart}` } });
-                    }
-                } else if (field === 'time') {
-                    // Parse HH:MM
-                    if (value.includes(':')) {
-                        const datePart = isoDateTime.split('T')[0] || new Date().toISOString().split('T')[0];
-                        handleChange({ target: { name, value: `${datePart}T${value}` } });
-                    }
-                }
-            };
-
             return (
-                <div style={{ marginBottom: '1rem' }}>
-                    <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500, fontSize: '0.875rem' }}>
-                        {label}
-                    </label>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
-                        <input
-                            type="text"
-                            placeholder="DD/MM/YY"
-                            value={displayDate}
-                            onChange={(e) => {
-                                const val = e.target.value;
-                                // Allow only numbers and /
-                                if (/^[\d/]*$/.test(val) && val.length <= 8) {
-                                    // Update immediately for typing
-                                    const parts = val.split('/');
-                                    if (parts.length === 3 && parts[0].length === 2 && parts[1].length === 2 && parts[2].length === 2) {
-                                        handleManualInput('date', val);
-                                    }
-                                }
-                            }}
-                            onBlur={(e) => handleManualInput('date', e.target.value)}
-                            style={{
-                                padding: '0.5rem',
-                                border: '1px solid #ccc',
-                                borderRadius: '4px',
-                                fontSize: '0.875rem'
-                            }}
-                        />
-                        <input
-                            type="text"
-                            placeholder="HH:MM"
-                            value={displayTime}
-                            onChange={(e) => {
-                                const val = e.target.value;
-                                // Allow only numbers and :
-                                if (/^[\d:]*$/.test(val) && val.length <= 5) {
-                                    if (val.length === 5 && val.includes(':')) {
-                                        handleManualInput('time', val);
-                                    }
-                                }
-                            }}
-                            onBlur={(e) => handleManualInput('time', e.target.value)}
-                            style={{
-                                padding: '0.5rem',
-                                border: '1px solid #ccc',
-                                borderRadius: '4px',
-                                fontSize: '0.875rem'
-                            }}
-                        />
-                    </div>
-                    <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '0.25rem' }}>
-                        Format: DD/MM/YY • HH:MM (24-hour)
-                    </div>
-                </div>
+                <ManualDateTimeInput
+                    label={label}
+                    value={formData[name]}
+                    onChange={(val) => handleChange({ target: { name, value: val } })}
+                    disabled={isDisabled}
+                />
             );
         }
 
         // For date type, use manual text input
         if (!isDisabled && type === 'date') {
-            const dateValue = formData[name] || '';
-            let displayDate = '';
-
-            if (dateValue) {
-                const [y, m, d] = dateValue.split('-');
-                displayDate = `${d}/${m}/${y.slice(-2)}`;
-            }
-
-            const handleManualDateInput = (value) => {
-                // Parse DD/MM/YY
-                const parts = value.split('/');
-                if (parts.length === 3) {
-                    const [d, m, y] = parts;
-                    const fullYear = y.length === 2 ? `20${y}` : y;
-                    const isoDate = `${fullYear}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`;
-                    handleChange({ target: { name, value: isoDate } });
-                }
-            };
-
             return (
-                <div style={{ marginBottom: '1rem' }}>
-                    <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500, fontSize: '0.875rem' }}>
-                        {label}
-                    </label>
-                    <input
-                        type="text"
-                        placeholder="DD/MM/YY"
-                        value={displayDate}
-                        onChange={(e) => {
-                            const val = e.target.value;
-                            if (/^[\d/]*$/.test(val) && val.length <= 8) {
-                                const parts = val.split('/');
-                                if (parts.length === 3 && parts[0].length === 2 && parts[1].length === 2 && parts[2].length === 2) {
-                                    handleManualDateInput(val);
-                                }
-                            }
-                        }}
-                        onBlur={(e) => handleManualDateInput(e.target.value)}
-                        style={{
-                            width: '100%',
-                            padding: '0.5rem',
-                            border: '1px solid #ccc',
-                            borderRadius: '4px',
-                            fontSize: '0.875rem'
-                        }}
-                    />
-                </div>
+                <ManualDateInput
+                    label={label}
+                    value={formData[name]}
+                    onChange={(val) => handleChange({ target: { name, value: val } })}
+                    disabled={isDisabled}
+                />
+            );
+        }
+
+        // For time type, use manual text input
+        if (!isDisabled && type === 'time') {
+            return (
+                <ManualTimeInput
+                    label={label}
+                    value={formData[name]}
+                    onChange={(val) => handleChange({ target: { name, value: val } })}
+                    disabled={isDisabled}
+                />
             );
         }
 
