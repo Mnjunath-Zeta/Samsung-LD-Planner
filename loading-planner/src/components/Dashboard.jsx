@@ -61,7 +61,7 @@ const Dashboard = () => {
         ]);
 
         // Generate table
-        doc.autoTable({
+        autoTable(doc, {
             startY: 35,
             head: [['Truck No.', 'Type', 'Transporter', 'Destination', 'Scheduled', 'Actual Entry', 'Gate Out', 'Status']],
             body: tableData,
