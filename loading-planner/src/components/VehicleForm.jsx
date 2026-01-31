@@ -23,7 +23,8 @@ const VehicleForm = () => {
         lrNumber: '',
         lrDate: '',
         ewayBill: '',
-        ewayBillExpiry: ''
+        ewayBillExpiry: '',
+        notes: ''
     });
 
     const handleChange = (e) => {
@@ -285,6 +286,26 @@ const VehicleForm = () => {
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                     {renderField('E-Way Bill Number', 'ewayBill', 'text', false)}
                     {renderField('E-Way Bill Expiry', 'ewayBillExpiry', 'date', false)}
+                </div>
+
+                <h3 style={{ fontSize: '1rem', marginTop: '1.5rem', marginBottom: '1rem', borderBottom: '1px solid var(--secondary)', paddingBottom: '0.5rem' }}>Notes</h3>
+                <div style={{ marginBottom: '1rem' }}>
+                    <textarea
+                        name="notes"
+                        value={formData.notes || ''}
+                        onChange={handleChange}
+                        placeholder="Add any additional notes here..."
+                        style={{
+                            width: '100%',
+                            minHeight: '100px',
+                            padding: '0.75rem',
+                            border: '1px solid #ccc',
+                            borderRadius: '4px',
+                            fontSize: '0.875rem',
+                            resize: 'vertical',
+                            fontFamily: 'inherit'
+                        }}
+                    />
                 </div>
 
                 <div style={{ display: 'flex', gap: '1rem', marginTop: '2rem' }}>

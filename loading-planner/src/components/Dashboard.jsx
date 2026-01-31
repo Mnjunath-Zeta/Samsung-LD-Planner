@@ -57,25 +57,29 @@ const Dashboard = () => {
             formatDate(v.entryDate) + ' ' + (v.entryTime || ''),
             formatDateTime(v.actualEntry),
             formatDateTime(v.gateOut),
+            v.lrNumber || '-',
+            v.lrDate ? formatDate(v.lrDate) : '-',
             v.status || '-'
         ]);
 
         // Generate table
         autoTable(doc, {
             startY: 35,
-            head: [['Truck No.', 'Type', 'Transporter', 'Destination', 'Scheduled', 'Actual Entry', 'Gate Out', 'Status']],
+            head: [['Truck No.', 'Type', 'Transporter', 'Destination', 'Scheduled', 'Actual Entry', 'Gate Out', 'LR No.', 'LR Date', 'Status']],
             body: tableData,
-            styles: { fontSize: 8 },
+            styles: { fontSize: 7 },
             headStyles: { fillColor: [59, 130, 246] },
             columnStyles: {
-                0: { cellWidth: 22 },
-                1: { cellWidth: 18 },
-                2: { cellWidth: 25 },
-                3: { cellWidth: 25 },
-                4: { cellWidth: 28 },
-                5: { cellWidth: 28 },
-                6: { cellWidth: 28 },
-                7: { cellWidth: 20 }
+                0: { cellWidth: 20 },
+                1: { cellWidth: 15 },
+                2: { cellWidth: 22 },
+                3: { cellWidth: 22 },
+                4: { cellWidth: 24 },
+                5: { cellWidth: 24 },
+                6: { cellWidth: 24 },
+                7: { cellWidth: 18 },
+                8: { cellWidth: 16 },
+                9: { cellWidth: 15 }
             }
         });
 

@@ -1,9 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Clock, MapPin, Calendar } from 'lucide-react';
+import { Clock, MapPin, Calendar, FileText } from 'lucide-react';
+import { useData } from '../context/DataContext';
 
 const VehicleCard = ({ vehicle }) => {
     const navigate = useNavigate();
+    const { updateVehicle } = useData();
+    const [showNotesModal, setShowNotesModal] = useState(false);
+    const [notes, setNotes] = useState(vehicle.notes || '');
 
     const getStatusColor = (status) => {
         switch (status) {
@@ -73,6 +77,27 @@ const VehicleCard = ({ vehicle }) => {
                             <Calendar size={14} />
                             <span>{formatDate(vehicle.entryDate)} &bull; {vehicle.entryTime}</span>
                         </div>
+
+                        {/* Notes Icon */}
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setShowNotesModal(true);
+                            }}
+                            style={{
+                                background: 'none',
+                                border: 'none',
+                                cursor: 'pointer',
+                                padding: '0.25rem',
+                                display: 'flex',
+                                alignItems: 'center',
+                                color: vehicle.notes ? 'var(--primary)' : '#94a3b8',
+                                transition: 'color 0.2s'
+                            }}
+                            title={vehicle.notes ? 'View/Edit Notes' : 'Add Notes'}
+                        >
+                            <FileText size={16} fill={vehicle.notes ? 'currentColor' : 'none'} />
+                        </button>
                     </div>
 
                     {/* Right Side: LR Details */}
@@ -110,6 +135,81 @@ const VehicleCard = ({ vehicle }) => {
                     </div>
                 )}
             </div>
+
+            {/* Notes Modal */}
+            {showNotesModal && (
+                <div
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        setShowNotesModal(false);
+                    }}
+                    style={{
+                        position: 'fixed',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        background: 'rgba(0,0,0,0.5)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        zIndex: 1000
+                    }}
+                >
+                    <div
+                        onClick={(e) => e.stopPropagation()}
+                        style={{
+                            background: 'white',
+                            padding: '1.5rem',
+                            borderRadius: '0.75rem',
+                            maxWidth: '500px',
+                            width: '90%',
+                            boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1)'
+                        }}
+                    >
+                        <h3 style={{ fontSize: '1.125rem', marginBottom: '1rem', fontWeight: 600 }}>
+                            Notes - {vehicle.truckNumber}
+                        </h3>
+                        <textarea
+                            value={notes}
+                            onChange={(e) => setNotes(e.target.value)}
+                            placeholder="Add notes here..."
+                            style={{
+                                width: '100%',
+                                minHeight: '150px',
+                                padding: '0.75rem',
+                                border: '1px solid #e2e8f0',
+                                borderRadius: '0.5rem',
+                                fontSize: '0.875rem',
+                                resize: 'vertical',
+                                fontFamily: 'inherit'
+                            }}
+                        />
+                        <div style={{ display: 'flex', gap: '0.5rem', marginTop: '1rem' }}>
+                            <button
+                                onClick={() => {
+                                    updateVehicle(vehicle.id, { notes });
+                                    setShowNotesModal(false);
+                                }}
+                                className="btn-primary"
+                                style={{ flex: 1 }}
+                            >
+                                Save
+                            </button>
+                            <button
+                                onClick={() => {
+                                    setNotes(vehicle.notes || '');
+                                    setShowNotesModal(false);
+                                }}
+                                className="btn-secondary"
+                                style={{ flex: 1 }}
+                            >
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
