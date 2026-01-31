@@ -9,13 +9,55 @@ import autoTable from 'jspdf-autotable';
 const Dashboard = () => {
     const { vehicles } = useData();
     const { isAdmin } = useAuth();
-    const [filterDate, setFilterDate] = React.useState('');
+    const [searchQuery, setSearchQuery] = React.useState('');
+    const [dateFilterType, setDateFilterType] = React.useState('All'); // All, Today, Week, Month, Custom
+    const [filterDate, setFilterDate] = React.useState(''); // For Custom Date
     const [filterStatus, setFilterStatus] = React.useState('All');
 
+    const checkDateRange = (dateString, type) => {
+        if (!dateString) return false;
+        const date = new Date(dateString);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        const itemDate = new Date(dateString);
+        itemDate.setHours(0, 0, 0, 0);
+
+        if (type === 'Today') {
+            return itemDate.getTime() === today.getTime();
+        }
+        if (type === 'Week') {
+            const weekAgo = new Date(today);
+            weekAgo.setDate(today.getDate() - 7);
+            return itemDate >= weekAgo && itemDate <= today;
+        }
+        if (type === 'Month') {
+            const monthAgo = new Date(today);
+            monthAgo.setDate(today.getDate() - 30);
+            return itemDate >= monthAgo && itemDate <= today;
+        }
+        return true;
+    };
+
     const filteredVehicles = vehicles.filter(v => {
-        const matchesDate = filterDate ? v.entryDate === filterDate : true;
+        // Search Filter
+        const searchLower = searchQuery.toLowerCase();
+        const matchesSearch = !searchQuery ||
+            (v.truckNumber && v.truckNumber.toLowerCase().includes(searchLower)) ||
+            (v.transporterName && v.transporterName.toLowerCase().includes(searchLower));
+
+        // Date Filter
+        let matchesDate = true;
+        if (dateFilterType === 'Custom') {
+            matchesDate = filterDate ? v.entryDate === filterDate : true;
+        } else if (dateFilterType !== 'All') {
+            matchesDate = checkDateRange(v.entryDate, dateFilterType);
+        }
+
+        // Status Filter
         const matchesStatus = filterStatus === 'All' ? true : v.status === filterStatus;
-        return matchesDate && matchesStatus;
+
+        return matchesSearch && matchesDate && matchesStatus;
     });
 
     const formatDate = (dateString) => {
@@ -121,13 +163,14 @@ const Dashboard = () => {
                 {/* Filters Container */}
                 <div style={{ background: 'white', padding: '0.75rem', borderRadius: '0.75rem', display: 'flex', flexDirection: 'row', flexWrap: 'wrap', gap: '0.75rem', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
 
-                    {/* Date Filter */}
+                    {/* Search Filter */}
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flex: '1 1 200px', minWidth: '200px', maxWidth: '100%' }}>
-                        <span style={{ fontSize: '0.875rem', fontWeight: 500, color: 'var(--text-secondary)', whiteSpace: 'nowrap' }}>Date:</span>
+                        <span style={{ fontSize: '0.875rem', fontWeight: 500, color: 'var(--text-secondary)', whiteSpace: 'nowrap' }}>Search:</span>
                         <input
-                            type="date"
-                            value={filterDate}
-                            onChange={(e) => setFilterDate(e.target.value)}
+                            type="text"
+                            placeholder="Truck No. or Transporter..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
                             style={{
                                 border: '1px solid #e2e8f0',
                                 borderRadius: '0.5rem',
@@ -138,22 +181,47 @@ const Dashboard = () => {
                                 minWidth: 0
                             }}
                         />
-                        {filterDate && (
-                            <button
-                                onClick={() => setFilterDate('')}
+                    </div>
+
+                    {/* Date Range Filter */}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flex: '1 1 200px', minWidth: '200px', maxWidth: '100%' }}>
+                        <span style={{ fontSize: '0.875rem', fontWeight: 500, color: 'var(--text-secondary)', whiteSpace: 'nowrap' }}>Date:</span>
+                        <select
+                            value={dateFilterType}
+                            onChange={(e) => setDateFilterType(e.target.value)}
+                            style={{
+                                border: '1px solid #e2e8f0',
+                                borderRadius: '0.5rem',
+                                padding: '0.35rem 0.5rem',
+                                fontSize: '0.875rem',
+                                flex: 1,
+                                outline: 'none',
+                                background: 'white',
+                                minWidth: 0
+                            }}
+                        >
+                            <option value="All">All Dates</option>
+                            <option value="Today">Today</option>
+                            <option value="Week">This Week</option>
+                            <option value="Month">Last 30 Days</option>
+                            <option value="Custom">Custom Date</option>
+                        </select>
+
+                        {/* Custom Date Input (Only visible if Custom selected) */}
+                        {dateFilterType === 'Custom' && (
+                            <input
+                                type="date"
+                                value={filterDate}
+                                onChange={(e) => setFilterDate(e.target.value)}
                                 style={{
-                                    background: 'none',
-                                    border: 'none',
-                                    color: 'var(--primary)',
-                                    fontSize: '0.75rem',
-                                    fontWeight: 600,
-                                    cursor: 'pointer',
-                                    padding: '0 0.25rem',
-                                    whiteSpace: 'nowrap'
+                                    border: '1px solid #e2e8f0',
+                                    borderRadius: '0.5rem',
+                                    padding: '0.35rem 0.5rem',
+                                    fontSize: '0.875rem',
+                                    width: '130px',
+                                    outline: 'none'
                                 }}
-                            >
-                                Clear
-                            </button>
+                            />
                         )}
                     </div>
 
