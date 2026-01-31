@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import VehicleCard from './VehicleCard';
 import { Download } from 'lucide-react';
 import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+import autoTable from 'jspdf-autotable';
 
 const Dashboard = () => {
     const { vehicles } = useData();
