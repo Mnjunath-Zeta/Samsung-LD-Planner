@@ -192,7 +192,8 @@ const VehicleForm = () => {
         lrDate: '',
         ewayBill: '',
         ewayBillExpiry: '',
-        notes: ''
+        notes: '',
+        status: 'Scheduled'
     });
 
     const handleChange = (e) => {
@@ -294,6 +295,27 @@ const VehicleForm = () => {
             <form onSubmit={handleSubmit} className="card">
                 <h3 style={{ fontSize: '1rem', marginBottom: '1rem', borderBottom: '1px solid var(--secondary)', paddingBottom: '0.5rem' }}>Vehicle Details</h3>
                 {renderField('Truck Number', 'truckNumber', 'text', !isAdmin)}
+
+                <div style={{ marginBottom: '1rem' }}>
+                    <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500, fontSize: '0.875rem' }}>Status</label>
+                    <select
+                        name="status"
+                        value={formData.status || 'Scheduled'}
+                        onChange={handleChange}
+                        style={{
+                            width: '100%',
+                            padding: '0.5rem',
+                            border: '1px solid #ccc',
+                            borderRadius: '4px',
+                            fontSize: '0.875rem',
+                            backgroundColor: 'white'
+                        }}
+                    >
+                        <option value="Scheduled">Scheduled</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Completed">Completed</option>
+                    </select>
+                </div>
                 {renderField('Vehicle Type', 'vehicleType', 'text', false)}
                 {renderField('Transporter Name', 'transporterName', 'text', false)}
                 {renderField('Destination', 'destination', 'text', !isAdmin)}
