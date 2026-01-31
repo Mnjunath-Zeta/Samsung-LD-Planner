@@ -6,17 +6,18 @@ import { useAuth } from '../context/AuthContext';
 const ManualDateInput = ({ label, value, onChange, disabled }) => {
     const [text, setText] = React.useState('');
 
+    // Sync with value prop changes (initial load or external update)
     React.useEffect(() => {
         if (value) {
             const [y, m, d] = value.split('-');
-            setText(`${d}/${m}/${y.slice(-2)}`);
+            const newText = `${d}/${m}/${y.slice(-2)}`;
+            // Only update if significantly different to avoid cursor jumping during typing if round-trip occurs
+            if (text !== newText) {
+                setText(newText);
+            }
         } else {
-            setText('');
+            if (text) setText('');
         }
-    }, []);
-
-    React.useEffect(() => {
-        if (!value && text) setText('');
     }, [value]);
 
     const handleChange = (e) => {
@@ -48,6 +49,7 @@ const ManualDateInput = ({ label, value, onChange, disabled }) => {
                 onChange={handleChange}
                 placeholder="DD/MM/YY"
                 disabled={disabled}
+                className="input-field"
                 style={{ width: '100%', padding: '0.5rem', border: '1px solid #ccc', borderRadius: '4px', fontSize: '0.875rem', background: disabled ? '#f3f4f6' : 'white' }}
             />
         </div>
@@ -63,17 +65,23 @@ const ManualDateTimeInput = ({ label, value, onChange, disabled }) => {
             const [datePart, timePart] = value.split('T');
             if (datePart) {
                 const [y, m, d] = datePart.split('-');
-                setDateText(`${d}/${m}/${y.slice(-2)}`);
+                const dFormatted = `${d}/${m}/${y.slice(-2)}`;
+                if (dateText !== dFormatted) setDateText(dFormatted);
             }
             if (timePart) {
-                setTimeText(timePart.slice(0, 5));
+                const tFormatted = timePart.slice(0, 5);
+                if (timeText !== tFormatted) setTimeText(tFormatted);
+            }
+        } else {
+            if (dateText || timeText) {
+                setDateText('');
+                setTimeText('');
             }
         }
-    }, []);
+    }, [value]);
 
     const updateValue = (dText, tText) => {
-        if (!dText || !tText) return;
-
+        // Only trigger onChange if we have a potentially valid full datetime
         const dParts = dText.split('/');
         if (dParts.length === 3 && dParts[0].length === 2 && dParts[1].length === 2 && dParts[2].length === 2 && tText.length === 5) {
             const [d, m, y] = dParts;
@@ -120,15 +128,11 @@ const ManualTimeInput = ({ label, value, onChange, disabled }) => {
 
     React.useEffect(() => {
         if (value) {
-            // value is HH:MM or HH:MM:SS
-            setText(value.slice(0, 5));
+            const tFormatted = value.slice(0, 5);
+            if (text !== tFormatted) setText(tFormatted);
         } else {
-            setText('');
+            if (text) setText('');
         }
-    }, []);
-
-    React.useEffect(() => {
-        if (!value && text) setText('');
     }, [value]);
 
     const handleChange = (e) => {
@@ -140,7 +144,6 @@ const ManualTimeInput = ({ label, value, onChange, disabled }) => {
             return;
         }
 
-        // Allow typing numbers and :
         if (/^[\d:]*$/.test(val) && val.length <= 5) {
             if (val.length === 5 && val.includes(':')) {
                 const [h, m] = val.split(':');
@@ -171,7 +174,7 @@ const ManualTimeInput = ({ label, value, onChange, disabled }) => {
 const VehicleForm = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-    const { vehicles, addVehicle, updateVehicle } = useData();
+    const { vehicles, addVehicle, updateVehicle, deleteVehicle } = useData();
     const { isAdmin } = useAuth();
 
     const existingVehicle = id ? vehicles.find(v => v.id === id) : null;
@@ -225,33 +228,8 @@ const VehicleForm = () => {
     const renderField = (label, name, type, isDisabled) => {
         const displayValue = formData[name];
 
-        // If Disabled (locked), just show formatted text
-        if (isDisabled) {
-            let formattedValue = displayValue;
-            if (type === 'date' && displayValue) formattedValue = formatDate(displayValue);
-            if (type === 'datetime-local' && displayValue) formattedValue = formatDateTime(displayValue);
-
-            return (
-                <div style={{ marginBottom: '1rem' }}>
-                    <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500, fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
-                        {label}
-                    </label>
-                    <div style={{
-                        padding: '0.5rem',
-                        background: '#f7fafc',
-                        border: '1px solid #e2e8f0',
-                        borderRadius: '4px',
-                        fontSize: '0.875rem',
-                        color: '#718096'
-                    }}>
-                        {formattedValue || '-'}
-                    </div>
-                </div>
-            );
-        }
-
         // For datetime-local, use manual text inputs
-        if (!isDisabled && type === 'datetime-local') {
+        if (type === 'datetime-local') {
             return (
                 <ManualDateTimeInput
                     label={label}
@@ -263,7 +241,7 @@ const VehicleForm = () => {
         }
 
         // For date type, use manual text input
-        if (!isDisabled && type === 'date') {
+        if (type === 'date') {
             return (
                 <ManualDateInput
                     label={label}
@@ -275,7 +253,7 @@ const VehicleForm = () => {
         }
 
         // For time type, use manual text input
-        if (!isDisabled && type === 'time') {
+        if (type === 'time') {
             return (
                 <ManualTimeInput
                     label={label}
@@ -369,6 +347,21 @@ const VehicleForm = () => {
                     <button type="button" onClick={() => navigate('/')} className="btn-secondary" style={{ flex: 1 }}>
                         Cancel
                     </button>
+                    {id && isAdmin && (
+                        <button
+                            type="button"
+                            onClick={() => {
+                                if (window.confirm('Are you sure you want to delete this vehicle?')) {
+                                    deleteVehicle(id);
+                                    navigate('/');
+                                }
+                            }}
+                            className="btn-secondary"
+                            style={{ flex: 1, borderColor: '#fee2e2', color: '#ef4444', background: '#fef2f2' }}
+                        >
+                            Delete
+                        </button>
+                    )}
                 </div>
             </form>
         </div>
