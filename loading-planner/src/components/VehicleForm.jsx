@@ -124,14 +124,15 @@ const VehicleForm = () => {
                         {/* The Visual Display */}
                         <div style={{
                             padding: '0.5rem',
-                            border: '1px solid #ccc', // Mimic standard input border
+                            border: '1px solid #ccc',
                             borderRadius: '4px',
                             background: '#fff',
                             fontSize: '0.875rem',
                             color: displayValue ? '#000' : '#888',
-                            minHeight: '38px', // Approximate input height
+                            minHeight: '38px',
                             display: 'flex',
-                            alignItems: 'center'
+                            alignItems: 'center',
+                            pointerEvents: 'none' // Allow clicks to pass through to input below
                         }}>
                             {formattedValue || (type === 'date' ? 'dd/mm/yy' : 'dd/mm/yy --:--')}
                         </div>
@@ -150,7 +151,8 @@ const VehicleForm = () => {
                                 width: '100%',
                                 height: '100%',
                                 opacity: 0,
-                                cursor: 'pointer'
+                                cursor: 'pointer',
+                                zIndex: 1
                             }}
                         />
                     </div>

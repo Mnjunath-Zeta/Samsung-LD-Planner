@@ -20,9 +20,12 @@ export const DataProvider = ({ children }) => {
 
     // Real-time listener for Firestore
     useEffect(() => {
+        console.log('Setting up Firestore listener...');
+
         const unsubscribe = onSnapshot(
             collection(db, 'vehicles'),
             (snapshot) => {
+                console.log('Firestore snapshot received:', snapshot.docs.length, 'documents');
                 const vehicleData = snapshot.docs.map(doc => ({
                     id: doc.id,
                     ...doc.data()
@@ -32,12 +35,22 @@ export const DataProvider = ({ children }) => {
             },
             (error) => {
                 console.error('Error fetching vehicles:', error);
+                alert('Failed to connect to database. Please check your internet connection and Firebase settings.');
                 setLoading(false);
             }
         );
 
+        // Set a timeout to stop loading after 5 seconds even if no response
+        const timeout = setTimeout(() => {
+            console.log('Firestore connection timeout');
+            setLoading(false);
+        }, 5000);
+
         // Cleanup listener on unmount
-        return () => unsubscribe();
+        return () => {
+            unsubscribe();
+            clearTimeout(timeout);
+        };
     }, []);
 
     const addVehicle = async (vehicle) => {

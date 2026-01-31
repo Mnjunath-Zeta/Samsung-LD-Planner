@@ -91,7 +91,12 @@ const Dashboard = () => {
             {filteredVehicles.length === 0 ? (
                 <div style={{ padding: '3rem 1rem', textAlign: 'center', color: 'var(--text-secondary)' }}>
                     <div style={{ marginBottom: '0.5rem', fontSize: '1.1rem', fontWeight: 500 }}>No trucks found</div>
-                    <div style={{ fontSize: '0.875rem' }}>for {filterDate ? new Date(filterDate).toLocaleDateString() : 'selected criteria'}</div>
+                    <div style={{ fontSize: '0.875rem' }}>
+                        for {filterDate ? (() => {
+                            const [y, m, d] = filterDate.split('-');
+                            return `${d}/${m}/${y.slice(-2)}`;
+                        })() : 'selected criteria'}
+                    </div>
                 </div>
             ) : (
                 <div className="vehicle-list">
