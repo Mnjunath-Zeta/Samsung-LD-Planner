@@ -107,12 +107,39 @@ const VehicleForm = () => {
             );
         }
 
-        // If Enabled and Date/Time type, use Overlay Trick to enforce YY format
-        if (!isDisabled && (type === 'date' || type === 'datetime-local')) {
+        // For datetime-local, use a simpler approach - just show the native input
+        // The display format will be handled when showing the data, not during input
+        if (!isDisabled && type === 'datetime-local') {
+            return (
+                <div style={{ marginBottom: '1rem' }}>
+                    <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500, fontSize: '0.875rem' }}>
+                        {label}
+                    </label>
+                    <input
+                        type={type}
+                        name={name}
+                        value={formData[name] || ''}
+                        onChange={handleChange}
+                        style={{
+                            width: '100%',
+                            padding: '0.5rem',
+                            border: '1px solid #ccc',
+                            borderRadius: '4px',
+                            fontSize: '0.875rem'
+                        }}
+                    />
+                    <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '0.25rem' }}>
+                        Will display as DD/MM/YY • HH:MM after saving
+                    </div>
+                </div>
+            );
+        }
+
+        // If Enabled and Date type, use Overlay Trick to enforce YY format
+        if (!isDisabled && type === 'date') {
             let formattedValue = displayValue;
             if (displayValue) {
-                if (type === 'date') formattedValue = formatDate(displayValue);
-                if (type === 'datetime-local') formattedValue = formatDateTime(displayValue);
+                formattedValue = formatDate(displayValue);
             }
 
             return (
@@ -132,9 +159,9 @@ const VehicleForm = () => {
                             minHeight: '38px',
                             display: 'flex',
                             alignItems: 'center',
-                            pointerEvents: 'none' // Allow clicks to pass through to input below
+                            pointerEvents: 'none'
                         }}>
-                            {formattedValue || (type === 'date' ? 'dd/mm/yy' : 'dd/mm/yy --:--')}
+                            {formattedValue || 'dd/mm/yy'}
                         </div>
 
                         {/* The Invisible Native Input */}
