@@ -5,7 +5,7 @@ import { Truck, User, LogOut, Plus, Database } from 'lucide-react';
 import { migrateLocalStorageToFirestore } from '../migrate';
 
 const Layout = () => {
-    const { userRole, toggleRole } = useAuth();
+    const { userRole, logout, user } = useAuth();
     const location = useLocation();
 
     return (
@@ -49,14 +49,20 @@ const Layout = () => {
                             <Database size={16} />
                         </button>
                     )}
-                    <button
-                        onClick={toggleRole}
-                        className="btn-secondary"
-                        style={{ padding: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.875rem' }}
-                    >
-                        <User size={16} />
-                        {userRole === 'admin' ? 'Admin' : 'User'}
-                    </button>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                        <span style={{ fontSize: '0.875rem', fontWeight: 500, color: 'var(--text-secondary)' }}>
+                            {user?.username}
+                        </span>
+                        <button
+                            onClick={logout}
+                            className="btn-secondary"
+                            style={{ padding: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.875rem', color: '#ef4444', borderColor: '#fee2e2', background: '#fef2f2' }}
+                            title="Sign Out"
+                        >
+                            <LogOut size={16} />
+                            Sign Out
+                        </button>
+                    </div>
                 </div>
             </header>
 

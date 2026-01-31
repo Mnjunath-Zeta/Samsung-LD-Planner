@@ -5,6 +5,7 @@ import VehicleCard from './VehicleCard';
 import { Download } from 'lucide-react';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import Analytics from './Analytics';
 
 const Dashboard = () => {
     const { vehicles } = useData();
@@ -132,6 +133,9 @@ const Dashboard = () => {
 
     return (
         <div className="dashboard">
+            {/* Analytics Section (Admin Only) */}
+            {isAdmin && <Analytics vehicles={vehicles} />}
+
             {/* Header + Filter */}
             <div style={{ marginBottom: '1.5rem' }}>
                 <div className="flex-between" style={{ marginBottom: '1rem' }}>

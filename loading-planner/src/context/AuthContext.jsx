@@ -5,23 +5,39 @@ const AuthContext = createContext();
 export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
-  // Roles: 'admin', 'user'
-  const [userRole, setUserRole] = useState(() => {
-    return localStorage.getItem('userRole') || 'admin';
+  // User object: { username: string, role: 'admin' | 'user' } | null
+  const [user, setUser] = useState(() => {
+    const savedUser = localStorage.getItem('currentUser');
+    return savedUser ? JSON.parse(savedUser) : null;
   });
 
-  useEffect(() => {
-    localStorage.setItem('userRole', userRole);
-  }, [userRole]);
-
-  const toggleRole = () => {
-    setUserRole(prev => prev === 'admin' ? 'user' : 'admin');
+  // Hardcoded credentials for now
+  const CREDENTIALS = {
+    admin: { password: 'password', role: 'admin' },
+    user: { password: 'password', role: 'user' }
   };
 
-  const isAdmin = userRole === 'admin';
+  const login = (username, password) => {
+    const userCreds = CREDENTIALS[username.toLowerCase()];
+
+    if (userCreds && userCreds.password === password) {
+      const userData = { username, role: userCreds.role };
+      setUser(userData);
+      localStorage.setItem('currentUser', JSON.stringify(userData));
+      return { success: true };
+    }
+    return { success: false, message: 'Invalid username or password' };
+  };
+
+  const logout = () => {
+    setUser(null);
+    localStorage.removeItem('currentUser');
+  };
+
+  const isAdmin = user?.role === 'admin';
 
   return (
-    <AuthContext.Provider value={{ userRole, setUserRole, toggleRole, isAdmin }}>
+    <AuthContext.Provider value={{ user, login, logout, isAdmin, userRole: user?.role }}>
       {children}
     </AuthContext.Provider>
   );
