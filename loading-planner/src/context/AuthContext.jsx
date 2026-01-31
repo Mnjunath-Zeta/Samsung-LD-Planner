@@ -13,8 +13,8 @@ export const AuthProvider = ({ children }) => {
 
   // Hardcoded credentials for now
   const CREDENTIALS = {
-    admin: { password: 'password', role: 'admin' },
-    user: { password: 'password', role: 'user' }
+    admin: { password: 'AdminSDS', role: 'admin' },
+    user: { password: 'UserSDS', role: 'user' }
   };
 
   const login = (username, password) => {
