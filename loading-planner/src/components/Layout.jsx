@@ -1,8 +1,7 @@
 import React from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Truck, User, LogOut, Plus, Database } from 'lucide-react';
-import { migrateLocalStorageToFirestore } from '../migrate';
+import { Truck, User, LogOut, Plus } from 'lucide-react';
 
 const Layout = () => {
     const { userRole, logout, user } = useAuth();
@@ -34,21 +33,7 @@ const Layout = () => {
                 </Link>
 
                 <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-                    {userRole === 'admin' && (
-                        <button
-                            onClick={async () => {
-                                if (window.confirm('Migrate localStorage data to Firestore? This should only be done once.')) {
-                                    await migrateLocalStorageToFirestore();
-                                    alert('Migration completed! Refresh the page.');
-                                }
-                            }}
-                            className="btn-secondary"
-                            style={{ padding: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.875rem' }}
-                            title="Migrate Data"
-                        >
-                            <Database size={16} />
-                        </button>
-                    )}
+
                     <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                         <span style={{ fontSize: '0.875rem', fontWeight: 500, color: 'var(--text-secondary)' }}>
                             {user?.username}
