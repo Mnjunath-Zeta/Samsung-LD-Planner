@@ -39,109 +39,111 @@ const VehicleCard = ({ vehicle }) => {
     };
 
     return (
-        <div
-            className="card"
-            onClick={() => navigate(`/vehicle/${vehicle.id}`)}
-            style={{ marginBottom: '1rem', cursor: 'pointer', borderLeft: '4px solid var(--primary)' }}
-        >
-            {/* Compact Header: Truck Num & Status */}
-            <div className="flex-between" style={{ marginBottom: '0.25rem' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <h3 style={{ fontSize: '1.125rem' }}>{vehicle.truckNumber}</h3>
-                    {vehicle.vehicleType && (
-                        <span style={{ fontSize: '0.75rem', color: '#64748b', background: '#f1f5f9', padding: '0.125rem 0.375rem', borderRadius: '0.25rem' }}>
-                            {vehicle.vehicleType}
-                        </span>
+        <>
+            <div
+                className="card"
+                onClick={() => navigate(`/vehicle/${vehicle.id}`)}
+                style={{ marginBottom: '1rem', cursor: 'pointer', borderLeft: '4px solid var(--primary)' }}
+            >
+                {/* Compact Header: Truck Num & Status */}
+                <div className="flex-between" style={{ marginBottom: '0.25rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <h3 style={{ fontSize: '1.125rem' }}>{vehicle.truckNumber}</h3>
+                        {vehicle.vehicleType && (
+                            <span style={{ fontSize: '0.75rem', color: '#64748b', background: '#f1f5f9', padding: '0.125rem 0.375rem', borderRadius: '0.25rem' }}>
+                                {vehicle.vehicleType}
+                            </span>
+                        )}
+                    </div>
+                    <span className={`badge ${getStatusColor(vehicle.status)}`}>{vehicle.status}</span>
+                </div>
+
+                {/* Compact Info Row: Transporter | Destination */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '0.5rem', fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
+                    {vehicle.transporterName && (
+                        <>
+                            <span style={{ fontWeight: 600, color: 'var(--primary)' }}>{vehicle.transporterName}</span>
+                            <span style={{ color: '#cbd5e1' }}>|</span>
+                        </>
                     )}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                        <MapPin size={14} />
+                        <span>{vehicle.destination}</span>
+                    </div>
                 </div>
-                <span className={`badge ${getStatusColor(vehicle.status)}`}>{vehicle.status}</span>
-            </div>
 
-            {/* Compact Info Row: Transporter | Destination */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '0.5rem', fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
-                {vehicle.transporterName && (
-                    <>
-                        <span style={{ fontWeight: 600, color: 'var(--primary)' }}>{vehicle.transporterName}</span>
-                        <span style={{ color: '#cbd5e1' }}>|</span>
-                    </>
-                )}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-                    <MapPin size={14} />
-                    <span>{vehicle.destination}</span>
-                </div>
-            </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                    {/* Left-Aligned Scheduled + Right-Aligned LR Details */}
+                    <div style={{ background: 'var(--secondary)', padding: '0.5rem', borderRadius: '0.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.875rem' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                            <span style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--text-secondary)', fontWeight: 600, minWidth: '70px' }}>Scheduled</span>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                                <Calendar size={14} />
+                                <span>{formatDate(vehicle.entryDate)} &bull; {vehicle.entryTime}</span>
+                            </div>
 
-                {/* Left-Aligned Scheduled + Right-Aligned LR Details */}
-                <div style={{ background: 'var(--secondary)', padding: '0.5rem', borderRadius: '0.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.875rem' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                        <span style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--text-secondary)', fontWeight: 600, minWidth: '70px' }}>Scheduled</span>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-                            <Calendar size={14} />
-                            <span>{formatDate(vehicle.entryDate)} &bull; {vehicle.entryTime}</span>
+                            {/* Notes Icon */}
+                            <button
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setNotes(vehicle.notes || '');
+                                    setShowNotesModal(true);
+                                }}
+                                style={{
+                                    background: 'none',
+                                    border: 'none',
+                                    cursor: 'pointer',
+                                    padding: '0.25rem',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    color: vehicle.notes ? 'var(--primary)' : '#94a3b8',
+                                    transition: 'color 0.2s'
+                                }}
+                                title={vehicle.notes ? 'View/Edit Notes' : 'Add Notes'}
+                            >
+                                <FileText size={16} fill={vehicle.notes ? 'currentColor' : 'none'} />
+                            </button>
                         </div>
 
-                        {/* Notes Icon */}
-                        <button
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                setNotes(vehicle.notes || '');
-                                setShowNotesModal(true);
-                            }}
-                            style={{
-                                background: 'none',
-                                border: 'none',
-                                cursor: 'pointer',
-                                padding: '0.25rem',
-                                display: 'flex',
-                                alignItems: 'center',
-                                color: vehicle.notes ? 'var(--primary)' : '#94a3b8',
-                                transition: 'color 0.2s'
-                            }}
-                            title={vehicle.notes ? 'View/Edit Notes' : 'Add Notes'}
-                        >
-                            <FileText size={16} fill={vehicle.notes ? 'currentColor' : 'none'} />
-                        </button>
+                        {/* Right Side: LR Details */}
+                        {vehicle.lrNumber && (
+                            <div style={{ textAlign: 'right', fontSize: '0.75rem' }}>
+                                <div style={{ fontWeight: 600, color: 'var(--primary)' }}>
+                                    <span style={{ color: 'var(--text-secondary)', fontWeight: 400, marginRight: '4px' }}>LR:</span>
+                                    {vehicle.lrNumber}
+                                </div>
+                                {vehicle.lrDate && (
+                                    <div style={{ color: 'var(--text-secondary)' }}>
+                                        <span style={{ marginRight: '4px' }}>Date:</span>
+                                        {formatDate(vehicle.lrDate)}
+                                    </div>
+                                )}
+                            </div>
+                        )}
                     </div>
 
-                    {/* Right Side: LR Details */}
-                    {vehicle.lrNumber && (
-                        <div style={{ textAlign: 'right', fontSize: '0.75rem' }}>
-                            <div style={{ fontWeight: 600, color: 'var(--primary)' }}>
-                                <span style={{ color: 'var(--text-secondary)', fontWeight: 400, marginRight: '4px' }}>LR:</span>
-                                {vehicle.lrNumber}
-                            </div>
-                            {vehicle.lrDate && (
-                                <div style={{ color: 'var(--text-secondary)' }}>
-                                    <span style={{ marginRight: '4px' }}>Date:</span>
-                                    {formatDate(vehicle.lrDate)}
+                    {/* Left-Aligned Operations */}
+                    {(vehicle.actualEntry || vehicle.gateOut) && (
+                        <div style={{ background: '#ecfdf5', padding: '0.5rem', borderRadius: '0.5rem', border: '1px solid #d1fae5', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                            {vehicle.actualEntry && (
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '0.875rem' }}>
+                                    <span style={{ color: '#047857', fontWeight: 600, minWidth: '70px' }}>Actual In</span>
+                                    <span style={{ color: '#065f46' }}>{formatDateTime(vehicle.actualEntry)}</span>
+                                </div>
+                            )}
+                            {vehicle.gateOut && (
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '0.875rem' }}>
+                                    <span style={{ color: '#047857', fontWeight: 600, minWidth: '70px' }}>Gate Out</span>
+                                    <span style={{ color: '#065f46' }}>{formatDateTime(vehicle.gateOut)}</span>
                                 </div>
                             )}
                         </div>
                     )}
                 </div>
-
-                {/* Left-Aligned Operations */}
-                {(vehicle.actualEntry || vehicle.gateOut) && (
-                    <div style={{ background: '#ecfdf5', padding: '0.5rem', borderRadius: '0.5rem', border: '1px solid #d1fae5', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                        {vehicle.actualEntry && (
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '0.875rem' }}>
-                                <span style={{ color: '#047857', fontWeight: 600, minWidth: '70px' }}>Actual In</span>
-                                <span style={{ color: '#065f46' }}>{formatDateTime(vehicle.actualEntry)}</span>
-                            </div>
-                        )}
-                        {vehicle.gateOut && (
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '0.875rem' }}>
-                                <span style={{ color: '#047857', fontWeight: 600, minWidth: '70px' }}>Gate Out</span>
-                                <span style={{ color: '#065f46' }}>{formatDateTime(vehicle.gateOut)}</span>
-                            </div>
-                        )}
-                    </div>
-                )}
             </div>
 
-            {/* Notes Modal */}
+            {/* Notes Modal - Rendered outside the card div to prevent click bubbling issues */}
             {showNotesModal && (
                 <div
                     onClick={(e) => {
@@ -226,7 +228,7 @@ const VehicleCard = ({ vehicle }) => {
                     </div>
                 </div>
             )}
-        </div>
+        </>
     );
 };
 
