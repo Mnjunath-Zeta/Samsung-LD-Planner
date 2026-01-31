@@ -179,51 +179,54 @@ const VehicleForm = () => {
             );
         }
 
-        // For date type, use overlay
+        // For date type, use manual text input
         if (!isDisabled && type === 'date') {
-            let formattedValue = displayValue;
-            if (displayValue) {
-                formattedValue = formatDate(displayValue);
+            const dateValue = formData[name] || '';
+            let displayDate = '';
+
+            if (dateValue) {
+                const [y, m, d] = dateValue.split('-');
+                displayDate = `${d}/${m}/${y.slice(-2)}`;
             }
+
+            const handleManualDateInput = (value) => {
+                // Parse DD/MM/YY
+                const parts = value.split('/');
+                if (parts.length === 3) {
+                    const [d, m, y] = parts;
+                    const fullYear = y.length === 2 ? `20${y}` : y;
+                    const isoDate = `${fullYear}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`;
+                    handleChange({ target: { name, value: isoDate } });
+                }
+            };
 
             return (
                 <div style={{ marginBottom: '1rem' }}>
                     <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500, fontSize: '0.875rem' }}>
                         {label}
                     </label>
-                    <div style={{ position: 'relative', width: '100%' }}>
-                        <div style={{
+                    <input
+                        type="text"
+                        placeholder="DD/MM/YY"
+                        value={displayDate}
+                        onChange={(e) => {
+                            const val = e.target.value;
+                            if (/^[\d/]*$/.test(val) && val.length <= 8) {
+                                const parts = val.split('/');
+                                if (parts.length === 3 && parts[0].length === 2 && parts[1].length === 2 && parts[2].length === 2) {
+                                    handleManualDateInput(val);
+                                }
+                            }
+                        }}
+                        onBlur={(e) => handleManualDateInput(e.target.value)}
+                        style={{
+                            width: '100%',
                             padding: '0.5rem',
                             border: '1px solid #ccc',
                             borderRadius: '4px',
-                            background: '#fff',
-                            fontSize: '0.875rem',
-                            color: displayValue ? '#000' : '#888',
-                            minHeight: '38px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            pointerEvents: 'none'
-                        }}>
-                            {formattedValue || 'dd/mm/yy'}
-                        </div>
-                        <input
-                            type={type}
-                            name={name}
-                            value={formData[name] || ''}
-                            onChange={handleChange}
-                            required={!isDisabled && name === 'truckNumber'}
-                            style={{
-                                position: 'absolute',
-                                top: 0,
-                                left: 0,
-                                width: '100%',
-                                height: '100%',
-                                opacity: 0,
-                                cursor: 'pointer',
-                                zIndex: 1
-                            }}
-                        />
-                    </div>
+                            fontSize: '0.875rem'
+                        }}
+                    />
                 </div>
             );
         }
