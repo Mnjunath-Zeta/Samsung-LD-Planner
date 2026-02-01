@@ -38,12 +38,20 @@ const VehicleCard = ({ vehicle }) => {
         return `${d}/${m}/${y.slice(-2)}`;
     };
 
+    const getStatusBorderColor = (status) => {
+        switch (status) {
+            case 'Completed': return '#16a34a';
+            case 'In Progress': return '#0284c7';
+            default: return '#d97706';
+        }
+    };
+
     return (
         <>
             <div
                 className="card"
                 onClick={() => navigate(`/vehicle/${vehicle.id}`)}
-                style={{ marginBottom: '1rem', cursor: 'pointer', borderLeft: '4px solid var(--primary)' }}
+                style={{ marginBottom: '1rem', cursor: 'pointer', borderLeft: `4px solid ${getStatusBorderColor(vehicle.status)}` }}
             >
                 {/* Compact Header: Truck Num & Status */}
                 <div className="flex-between" style={{ marginBottom: '0.25rem' }}>
