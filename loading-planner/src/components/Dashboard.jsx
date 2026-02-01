@@ -157,19 +157,64 @@ const Dashboard = () => {
 
                 {/* Status Summary Cards */}
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.75rem', marginBottom: '1.5rem' }}>
-                    <div className="card" style={{ padding: '0.75rem', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', borderLeft: '4px solid #d97706' }}>
+                    <div
+                        onClick={() => setFilterStatus(filterStatus === 'Scheduled' ? 'All' : 'Scheduled')}
+                        className="card"
+                        style={{
+                            padding: '0.75rem',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            borderLeft: '4px solid #d97706',
+                            cursor: 'pointer',
+                            background: filterStatus === 'Scheduled' ? '#fff7ed' : 'white',
+                            border: filterStatus === 'Scheduled' ? '1px solid #d97706' : 'none',
+                            borderLeft: '4px solid #d97706'
+                        }}
+                    >
                         <span style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--text-primary)' }}>
                             {vehicles.filter(v => v.status === 'Scheduled').length}
                         </span>
                         <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Scheduled</span>
                     </div>
-                    <div className="card" style={{ padding: '0.75rem', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', borderLeft: '4px solid #0284c7' }}>
+                    <div
+                        onClick={() => setFilterStatus(filterStatus === 'In Progress' ? 'All' : 'In Progress')}
+                        className="card"
+                        style={{
+                            padding: '0.75rem',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            borderLeft: '4px solid #0284c7',
+                            cursor: 'pointer',
+                            background: filterStatus === 'In Progress' ? '#f0f9ff' : 'white',
+                            border: filterStatus === 'In Progress' ? '1px solid #0284c7' : 'none',
+                            borderLeft: '4px solid #0284c7'
+                        }}
+                    >
                         <span style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--text-primary)' }}>
                             {vehicles.filter(v => v.status === 'In Progress').length}
                         </span>
                         <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>In Prog</span>
                     </div>
-                    <div className="card" style={{ padding: '0.75rem', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', borderLeft: '4px solid #16a34a' }}>
+                    <div
+                        onClick={() => setFilterStatus(filterStatus === 'Completed' ? 'All' : 'Completed')}
+                        className="card"
+                        style={{
+                            padding: '0.75rem',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            borderLeft: '4px solid #16a34a',
+                            cursor: 'pointer',
+                            background: filterStatus === 'Completed' ? '#f0fdf4' : 'white',
+                            border: filterStatus === 'Completed' ? '1px solid #16a34a' : 'none',
+                            borderLeft: '4px solid #16a34a'
+                        }}
+                    >
                         <span style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--text-primary)' }}>
                             {vehicles.filter(v => v.status === 'Completed').length}
                         </span>
@@ -242,29 +287,7 @@ const Dashboard = () => {
                         )}
                     </div>
 
-                    {/* Status Filter */}
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flex: '1 1 200px', minWidth: '200px', maxWidth: '100%' }}>
-                        <span style={{ fontSize: '0.875rem', fontWeight: 500, color: 'var(--text-secondary)', whiteSpace: 'nowrap' }}>Status:</span>
-                        <select
-                            value={filterStatus}
-                            onChange={(e) => setFilterStatus(e.target.value)}
-                            style={{
-                                border: '1px solid #e2e8f0',
-                                borderRadius: '0.5rem',
-                                padding: '0.35rem 0.5rem',
-                                fontSize: '0.875rem',
-                                flex: 1,
-                                outline: 'none',
-                                background: 'white',
-                                minWidth: 0
-                            }}
-                        >
-                            <option value="All">All</option>
-                            <option value="Scheduled">Scheduled</option>
-                            <option value="In Progress">In Progress</option>
-                            <option value="Completed">Completed</option>
-                        </select>
-                    </div>
+
                 </div>
             </div>
 
