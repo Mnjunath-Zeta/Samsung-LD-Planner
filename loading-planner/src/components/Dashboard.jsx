@@ -166,17 +166,17 @@ const Dashboard = () => {
                             flexDirection: 'column',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            borderLeft: '4px solid #d97706',
                             cursor: 'pointer',
                             background: filterStatus === 'Scheduled' ? '#fff7ed' : 'white',
-                            border: filterStatus === 'Scheduled' ? '1px solid #d97706' : 'none',
-                            borderLeft: '4px solid #d97706'
+                            border: filterStatus === 'Scheduled' ? '1px solid #d97706' : '1px solid transparent',
+                            borderLeft: '4px solid #d97706',
+                            boxShadow: filterStatus === 'Scheduled' ? 'none' : 'var(--shadow-sm)'
                         }}
                     >
-                        <span style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+                        <span style={{ fontSize: '1.5rem', fontWeight: 700, color: '#d97706' }}>
                             {vehicles.filter(v => v.status === 'Scheduled').length}
                         </span>
-                        <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Scheduled</span>
+                        <span style={{ fontSize: '0.75rem', color: '#d97706', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 600 }}>Scheduled</span>
                     </div>
                     <div
                         onClick={() => setFilterStatus(filterStatus === 'In Progress' ? 'All' : 'In Progress')}
@@ -187,17 +187,17 @@ const Dashboard = () => {
                             flexDirection: 'column',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            borderLeft: '4px solid #0284c7',
                             cursor: 'pointer',
                             background: filterStatus === 'In Progress' ? '#f0f9ff' : 'white',
-                            border: filterStatus === 'In Progress' ? '1px solid #0284c7' : 'none',
-                            borderLeft: '4px solid #0284c7'
+                            border: filterStatus === 'In Progress' ? '1px solid #0284c7' : '1px solid transparent',
+                            borderLeft: '4px solid #0284c7',
+                            boxShadow: filterStatus === 'In Progress' ? 'none' : 'var(--shadow-sm)'
                         }}
                     >
-                        <span style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+                        <span style={{ fontSize: '1.5rem', fontWeight: 700, color: '#0284c7' }}>
                             {vehicles.filter(v => v.status === 'In Progress').length}
                         </span>
-                        <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>In Prog</span>
+                        <span style={{ fontSize: '0.75rem', color: '#0284c7', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 600 }}>In Prog</span>
                     </div>
                     <div
                         onClick={() => setFilterStatus(filterStatus === 'Completed' ? 'All' : 'Completed')}
@@ -208,17 +208,17 @@ const Dashboard = () => {
                             flexDirection: 'column',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            borderLeft: '4px solid #16a34a',
                             cursor: 'pointer',
                             background: filterStatus === 'Completed' ? '#f0fdf4' : 'white',
-                            border: filterStatus === 'Completed' ? '1px solid #16a34a' : 'none',
-                            borderLeft: '4px solid #16a34a'
+                            border: filterStatus === 'Completed' ? '1px solid #16a34a' : '1px solid transparent',
+                            borderLeft: '4px solid #16a34a',
+                            boxShadow: filterStatus === 'Completed' ? 'none' : 'var(--shadow-sm)'
                         }}
                     >
-                        <span style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+                        <span style={{ fontSize: '1.5rem', fontWeight: 700, color: '#16a34a' }}>
                             {vehicles.filter(v => v.status === 'Completed').length}
                         </span>
-                        <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Completed</span>
+                        <span style={{ fontSize: '0.75rem', color: '#16a34a', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 600 }}>Completed</span>
                     </div>
                 </div>
 
