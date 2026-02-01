@@ -21,6 +21,7 @@
     - Added **Status Dropdown** (Scheduled, In Progress, Completed).
     - Removed deprecated "Migrate Data" tool.
     - Updated Vehicle Card styling to match status colors.
+    - Added auto-formatting for Date (DD/MM/YY) and Time (HH:MM) inputs.
     - Cleaned up UI/UX.
 
 ## Current State

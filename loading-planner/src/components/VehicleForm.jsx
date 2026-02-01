@@ -21,7 +21,25 @@ const ManualDateInput = ({ label, value, onChange, disabled }) => {
     }, [value]);
 
     const handleChange = (e) => {
-        const val = e.target.value;
+        let val = e.target.value;
+        const isDeleting = val.length < text.length;
+
+        if (isDeleting) {
+            setText(val);
+            if (val === '') onChange('');
+            return;
+        }
+
+        // Clean: allow only digits and slashes
+        val = val.replace(/[^0-9/]/g, '');
+
+        // Auto-append slash
+        if (val.length === 2) val += '/';
+        if (val.length === 5) val += '/';
+
+        // Strict length limit
+        if (val.length > 8) val = val.slice(0, 8);
+
         setText(val);
 
         if (val === '') {
@@ -48,6 +66,7 @@ const ManualDateInput = ({ label, value, onChange, disabled }) => {
                 value={text}
                 onChange={handleChange}
                 placeholder="DD/MM/YY"
+                maxLength={8}
                 disabled={disabled}
                 className="input-field"
                 style={{ width: '100%', padding: '0.5rem', border: '1px solid #ccc', borderRadius: '4px', fontSize: '0.875rem', background: disabled ? '#f3f4f6' : 'white' }}
@@ -90,6 +109,43 @@ const ManualDateTimeInput = ({ label, value, onChange, disabled }) => {
         }
     };
 
+    const handleDateChange = (e) => {
+        let val = e.target.value;
+        const isDeleting = val.length < dateText.length;
+
+        if (isDeleting) {
+            setDateText(val);
+            updateValue(val, timeText);
+            return;
+        }
+
+        val = val.replace(/[^0-9/]/g, '');
+        if (val.length === 2) val += '/';
+        if (val.length === 5) val += '/';
+        if (val.length > 8) val = val.slice(0, 8);
+
+        setDateText(val);
+        updateValue(val, timeText);
+    };
+
+    const handleTimeChange = (e) => {
+        let val = e.target.value;
+        const isDeleting = val.length < timeText.length;
+
+        if (isDeleting) {
+            setTimeText(val);
+            updateValue(dateText, val);
+            return;
+        }
+
+        val = val.replace(/[^0-9:]/g, '');
+        if (val.length === 2) val += ':';
+        if (val.length > 5) val = val.slice(0, 5);
+
+        setTimeText(val);
+        updateValue(dateText, val);
+    };
+
     return (
         <div style={{ marginBottom: '1rem' }}>
             <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500, fontSize: '0.875rem' }}>{label}</label>
@@ -97,24 +153,18 @@ const ManualDateTimeInput = ({ label, value, onChange, disabled }) => {
                 <input
                     type="text"
                     value={dateText}
-                    onChange={(e) => {
-                        const val = e.target.value;
-                        setDateText(val);
-                        updateValue(val, timeText);
-                    }}
+                    onChange={handleDateChange}
                     placeholder="DD/MM/YY"
+                    maxLength={8}
                     disabled={disabled}
                     style={{ padding: '0.5rem', border: '1px solid #ccc', borderRadius: '4px', background: disabled ? '#f3f4f6' : 'white' }}
                 />
                 <input
                     type="text"
                     value={timeText}
-                    onChange={(e) => {
-                        const val = e.target.value;
-                        setTimeText(val);
-                        updateValue(dateText, val);
-                    }}
+                    onChange={handleTimeChange}
                     placeholder="HH:MM"
+                    maxLength={5}
                     disabled={disabled}
                     style={{ padding: '0.5rem', border: '1px solid #ccc', borderRadius: '4px', background: disabled ? '#f3f4f6' : 'white' }}
                 />
@@ -136,7 +186,19 @@ const ManualTimeInput = ({ label, value, onChange, disabled }) => {
     }, [value]);
 
     const handleChange = (e) => {
-        const val = e.target.value;
+        let val = e.target.value;
+        const isDeleting = val.length < text.length;
+
+        if (isDeleting) {
+            setText(val);
+            if (val === '') onChange('');
+            return;
+        }
+
+        val = val.replace(/[^0-9:]/g, '');
+        if (val.length === 2) val += ':';
+        if (val.length > 5) val = val.slice(0, 5);
+
         setText(val);
 
         if (val === '') {
@@ -144,14 +206,12 @@ const ManualTimeInput = ({ label, value, onChange, disabled }) => {
             return;
         }
 
-        if (/^[\d:]*$/.test(val) && val.length <= 5) {
-            if (val.length === 5 && val.includes(':')) {
-                const [h, m] = val.split(':');
-                const hNum = parseInt(h);
-                const mNum = parseInt(m);
-                if (hNum >= 0 && hNum < 24 && mNum >= 0 && mNum < 60) {
-                    onChange(val);
-                }
+        if (val.length === 5 && val.includes(':')) {
+            const [h, m] = val.split(':');
+            const hNum = parseInt(h);
+            const mNum = parseInt(m);
+            if (hNum >= 0 && hNum < 24 && mNum >= 0 && mNum < 60) {
+                onChange(val);
             }
         }
     };
@@ -164,6 +224,7 @@ const ManualTimeInput = ({ label, value, onChange, disabled }) => {
                 value={text}
                 onChange={handleChange}
                 placeholder="HH:MM"
+                maxLength={5}
                 disabled={disabled}
                 style={{ width: '100%', padding: '0.5rem', border: '1px solid #ccc', borderRadius: '4px', fontSize: '0.875rem', background: disabled ? '#f3f4f6' : 'white' }}
             />
