@@ -105,11 +105,11 @@ const VehicleCard = ({ vehicle }) => {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
                     {/* Left-Aligned Scheduled + Right-Aligned LR Details */}
                     <div style={{ background: 'var(--secondary)', padding: '0.5rem', borderRadius: '0.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.875rem' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                            <span style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--text-secondary)', fontWeight: 600, minWidth: '70px' }}>Scheduled</span>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                            <span style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--text-secondary)', fontWeight: 600 }}>Scheduled</span>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', marginTop: '0.125rem' }}>
                                 <Calendar size={14} />
-                                <span>{formatDate(vehicle.entryDate)} &bull; {vehicle.entryTime}</span>
+                                <span style={{ fontWeight: 500 }}>{formatDate(vehicle.entryDate)} &bull; {vehicle.entryTime}</span>
                             </div>
                         </div>
 
