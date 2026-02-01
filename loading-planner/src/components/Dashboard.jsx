@@ -136,27 +136,44 @@ const Dashboard = () => {
             <div style={{ marginBottom: '1.5rem' }}>
                 <div className="flex-between" style={{ marginBottom: '1rem' }}>
                     <h2 style={{ fontSize: '1.5rem' }}>Schedule</h2>
-                    <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-                        <span className="text-sm" style={{ fontWeight: 600, background: 'var(--secondary)', padding: '0.25rem 0.75rem', borderRadius: '1rem' }}>
-                            {filteredVehicles.length} Trucks
+                    {isAdmin && (
+                        <button
+                            onClick={exportToPDF}
+                            className="btn-primary"
+                            style={{
+                                padding: '0.5rem 0.75rem',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '0.5rem',
+                                fontSize: '0.875rem'
+                            }}
+                            title="Export to PDF"
+                        >
+                            <Download size={16} />
+                            Export
+                        </button>
+                    )}
+                </div>
+
+                {/* Status Summary Cards */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.75rem', marginBottom: '1.5rem' }}>
+                    <div className="card" style={{ padding: '0.75rem', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', borderLeft: '4px solid #d97706' }}>
+                        <span style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+                            {vehicles.filter(v => v.status === 'Scheduled').length}
                         </span>
-                        {isAdmin && (
-                            <button
-                                onClick={exportToPDF}
-                                className="btn-primary"
-                                style={{
-                                    padding: '0.5rem 0.75rem',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '0.5rem',
-                                    fontSize: '0.875rem'
-                                }}
-                                title="Export to PDF"
-                            >
-                                <Download size={16} />
-                                Export
-                            </button>
-                        )}
+                        <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Scheduled</span>
+                    </div>
+                    <div className="card" style={{ padding: '0.75rem', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', borderLeft: '4px solid #0284c7' }}>
+                        <span style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+                            {vehicles.filter(v => v.status === 'In Progress').length}
+                        </span>
+                        <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>In Prog</span>
+                    </div>
+                    <div className="card" style={{ padding: '0.75rem', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', borderLeft: '4px solid #16a34a' }}>
+                        <span style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+                            {vehicles.filter(v => v.status === 'Completed').length}
+                        </span>
+                        <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Completed</span>
                     </div>
                 </div>
 

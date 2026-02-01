@@ -132,20 +132,18 @@ const VehicleCard = ({ vehicle }) => {
                     </div>
 
                     {/* Left-Aligned Operations */}
+                    {/* Left-Aligned Operations */}
                     {(vehicle.actualEntry || vehicle.gateOut) && (
-                        <div style={{ background: '#ecfdf5', padding: '0.5rem', borderRadius: '0.5rem', border: '1px solid #d1fae5', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                            {vehicle.actualEntry && (
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '0.875rem' }}>
-                                    <span style={{ color: '#047857', fontWeight: 600, minWidth: '70px' }}>Actual In</span>
-                                    <span style={{ color: '#065f46' }}>{formatDateTime(vehicle.actualEntry)}</span>
-                                </div>
-                            )}
-                            {vehicle.gateOut && (
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '0.875rem' }}>
-                                    <span style={{ color: '#047857', fontWeight: 600, minWidth: '70px' }}>Gate Out</span>
-                                    <span style={{ color: '#065f46' }}>{formatDateTime(vehicle.gateOut)}</span>
-                                </div>
-                            )}
+                        <div style={{ background: '#ecfdf5', padding: '0.5rem', borderRadius: '0.5rem', border: '1px solid #d1fae5', display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '0.875rem' }}>
+                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                                <span style={{ color: '#047857', fontWeight: 600, fontSize: '0.75rem', textTransform: 'uppercase' }}>Actual In</span>
+                                <span style={{ color: '#065f46', fontWeight: 500 }}>{vehicle.actualEntry ? formatDateTime(vehicle.actualEntry) : '-'}</span>
+                            </div>
+
+                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+                                <span style={{ color: '#047857', fontWeight: 600, fontSize: '0.75rem', textTransform: 'uppercase' }}>Gate Out</span>
+                                <span style={{ color: '#065f46', fontWeight: 500 }}>{vehicle.gateOut ? formatDateTime(vehicle.gateOut) : '-'}</span>
+                            </div>
                         </div>
                     )}
                 </div>
