@@ -168,7 +168,9 @@ const Dashboard = () => {
                             justifyContent: 'center',
                             cursor: 'pointer',
                             background: filterStatus === 'Scheduled' ? '#fff7ed' : 'white',
-                            border: filterStatus === 'Scheduled' ? '1px solid #d97706' : '1px solid transparent',
+                            borderWidth: '1px',
+                            borderStyle: 'solid',
+                            borderColor: filterStatus === 'Scheduled' ? '#d97706' : 'transparent',
                             borderLeft: '4px solid #d97706',
                             boxShadow: filterStatus === 'Scheduled' ? 'none' : 'var(--shadow-sm)'
                         }}
@@ -189,7 +191,9 @@ const Dashboard = () => {
                             justifyContent: 'center',
                             cursor: 'pointer',
                             background: filterStatus === 'In Progress' ? '#f0f9ff' : 'white',
-                            border: filterStatus === 'In Progress' ? '1px solid #0284c7' : '1px solid transparent',
+                            borderWidth: '1px',
+                            borderStyle: 'solid',
+                            borderColor: filterStatus === 'In Progress' ? '#0284c7' : 'transparent',
                             borderLeft: '4px solid #0284c7',
                             boxShadow: filterStatus === 'In Progress' ? 'none' : 'var(--shadow-sm)'
                         }}
@@ -210,7 +214,9 @@ const Dashboard = () => {
                             justifyContent: 'center',
                             cursor: 'pointer',
                             background: filterStatus === 'Completed' ? '#f0fdf4' : 'white',
-                            border: filterStatus === 'Completed' ? '1px solid #16a34a' : '1px solid transparent',
+                            borderWidth: '1px',
+                            borderStyle: 'solid',
+                            borderColor: filterStatus === 'Completed' ? '#16a34a' : 'transparent',
                             borderLeft: '4px solid #16a34a',
                             boxShadow: filterStatus === 'Completed' ? 'none' : 'var(--shadow-sm)'
                         }}

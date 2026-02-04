@@ -22,6 +22,8 @@
     - Removed deprecated "Migrate Data" tool.
     - Updated Vehicle Card styling to match status colors.
     - Added auto-formatting for Date (DD/MM/YY) and Time (HH:MM) inputs.
+    - Implemented interactive Status Summary Cards on Dashboard.
+    - Refined Vehicle Card layout (Notes icon placement, vertical date alignment).
     - Cleaned up UI/UX.
 
 ## Current State
